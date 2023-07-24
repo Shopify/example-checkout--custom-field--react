@@ -1,6 +1,6 @@
 # Checkout UI Extension
 
-Checkout UI extensions let app developers build custom functionality that merchants can install at defined points in the checkout flow. You can learn more about checkout UI extensions in Shopify’s [developer documentation](https://shopify.dev/api/checkout-extensions/checkout).
+Checkout UI extensions let app developers build custom functionality that merchants can install at defined targets in the checkout flow. You can learn more about checkout UI extensions in Shopify’s [developer documentation](https://shopify.dev/api/checkout-extensions/checkout).
 
 
 ## Prerequisites
@@ -26,43 +26,54 @@ Initially, your extension will have the following files:
   └── extensions
     └── my-checkout-ui-extension
         ├── src
-        │   └── index.jsx OR index.js // The index page of the checkout UI extension
+        │   └── PurchaseCheckoutBlockRender.jsx The source code for the `purchase.checkout.block.render` extension target
         ├── locales
-        │   ├── en.default.json // The default locale for the checkout UI extension
-        │   └── fr.json // The locale file for non-regional French translations
-        └── shopify.ui.extension.toml // The config file for the checkout UI extension
+        │   ├── en.default.json // The default locale for the checkout UI extension. Shared across all extension targets.
+        │   └── fr.json // The locale file for non-regional French translations. Shared across all extension targets.
+        └── shopify.extension.toml // The config file for the checkout UI extension
 
 ```
 
-You can customize your new extension by editing the code in the `src/index.js` or `src/index.jsx` file.
+You can customize your new extension by editing the code in the `src/PurchaseCheckoutBlockRender.jsx` file.
 
-> By default, your extension is configured to target the `Checkout::Dynamic::Render` [extension point](https://shopify.dev/api/checkout-extensions/checkout#extension-points). This extension point does not have a single location in the checkout where it will appear; instead, a merchant installing your extension will configure where *they* want your extension to show up.
-> If you are building an extension that is tied to existing UI element in the checkout, such as the cart lines or shipping method, you can change the extension point so that your UI extension will render in the correct location. Check out the list of [all available extension points](https://shopify.dev/api/checkout-extensions/checkout#extension-points) to get some inspiration for the kinds of content you can provide with checkout UI extensions.
+> By default, your extension is configured to target the `purchase.checkout.block.render` [extension target](https://shopify.dev/docs/api/checkout-ui-extensions/extension-targets-overview). This extension target does not have a single location in the checkout where it will appear; instead, a merchant installing your extension will configure where *they* want your extension to show up.
+> If you are building an extension that is tied to existing UI element in the checkout, such as the cart lines or shipping method, you can change the extension target so that your UI extension will render in the correct location. Check out the list of [all available extension targets](https://shopify.dev/docs/api/checkout-ui-extensions/extension-targets-overview) to get some inspiration for the kinds of content you can provide with checkout UI extensions.
 
+You can add new extension targets by adding a new entry to `src/shopify.extension.toml`, e.g:
+
+```` toml
+[[extensions.targeting]]
+target = "purchase.checkout.cart-line-item.render-after"
+module = "./src/CheckoutCartLinesRenderAfter.jsx"
+````
+
+You would then add a new file at `src/CheckoutCartLinesRenderAfter.jsx`.
 
 To shape your extension you have the following collection of tools available:
-* [UI components](https://shopify.dev/api/checkout-extensions/checkout/components), the visual elements you can render in your extension.
-* [Extension APIs](https://shopify.dev/api/checkout-extensions/checkout/extension-points/api), which give you access to read and write data in the checkout.
 
-> If you are using React, there is also a large collection of [React Hooks available](https://shopify.dev/api/checkout-extensions/checkout/extension-points/api#react-hooks) to ease access to these operations, otherwise you'll need to manually subscribe to the subscribable value directly with a callback.
+* [Checkout UI components](https://shopify.dev/docs/api/checkout-ui-extensions/components), the visual elements you can render in your checkout extension targets.
+* Admin UI Extensions for [React](https://github.com/Shopify/ui-extensions/tree/main/packages/admin-ui-extensions-react) & [JavaScript](https://github.com/Shopify/ui-extensions/tree/main/packages/admin-ui-extensions)
+* [Extension APIs](https://shopify.dev/docs/docs/api/checkout-ui-extensions/apis/extensiontargets), which give you access to read and write data in the checkout.
+
+> If you are using React, there is also a large collection of [React Hooks available](https://shopify.dev/docs/api/checkout-ui-extensions/react-hooks) to ease access to these operations, otherwise you'll need to manually subscribe to the subscribable value directly with a callback.
 
 ## FAQ
-* **How can I preview my extension?**
+* **How can I switch my extension between static and dynamic?**
 
   1. Make sure you've started your local development server using `npm|yarn|pnpm dev`
-  2. Depending on your selected location they may be either `dynamic` or `static` extension points, which diferr slightly on the process to preview them.
-      - `Dynamic extensions` can be placed using a [query string parameter](https://shopify.dev/apps/checkout/test-ui-extensions#dynamic-extension-points).
+  2. Depending on your selected location they may be either `dynamic` or `static` extension targets, which diferr slightly on the process to preview them.
+      - `Dynamic extensions` can be placed using a [query string parameter](https://shopify.dev/apps/checkout/test-ui-extensions#dynamic-extension-targets).
       - `Static extensions` require no extra work, just note that a static extension is shown only if the section that they are attached to is enabled.
 
 * **How can I change my extension type?**
 
     To change your extension type, be mindful that you have to change it in the following places:
-    1. In your `script file`, where you declared the extension (will be either _render()_ or _extend()_), you'll have to change the declared Extension Point.
-    2. In your `settings TOML file` (shopify.ui.extension.toml) you'll have to change the `extension_points` declaration for your new desired type.
+    1. In your `script file`, where you declared the extension (will be either _render()_ or _extend()_), you'll have to change the declared extension target.
+    2. In your `settings TOML file` (shopify.extension.toml) you'll have to change the `[[extensions.targeting]]` declaration for your new desired target.
 
 * **How do I let merchants customize my extension?**
 
-    You can enable merchants to customize your extension through the [checkout ui extension settings](https://shopify.dev/api/checkout-extensions/checkout/configuration#settings-definition) which define a set of fields and values that the merchant can set from the checkout editor. You can use validation options to apply additional constraints to the data that the setting can store, such as a minimum or maximum value.
+    You can enable merchants to customize your extension through the [checkout ui extension settings](https://shopify.dev/docs/api/checkout-ui-extensions/configuration#settings-definition) which define a set of fields and values that the merchant can set from the checkout editor. You can use validation options to apply additional constraints to the data that the setting can store, such as a minimum or maximum value.
 
     To learn more, you can follow the step-by-step process in the tutorial to [add a custom banner](https://shopify.dev/apps/checkout/custom-banners/add-custom-banner).
 
@@ -71,7 +82,7 @@ To shape your extension you have the following collection of tools available:
 - [Checkout app documentation](https://shopify.dev/apps/checkout)
 
 - [Checkout UI extension documentation](https://shopify.dev/api/checkout-extensions)
-  - [Configuration](https://shopify.dev/api/checkout-extensions/checkout/configuration)
-  - [API Reference](https://shopify.dev/api/checkout-extensions/checkout/extension-points/api)
-  - [UI Components](https://shopify.dev/api/checkout-extensions/checkout/components)
-  - [Available React Hooks](https://shopify.dev/api/checkout-extensions/checkout/extension-points/api#react-hooks)
+  - [Configuration](https://shopify.dev/docs/api/checkout-ui-extensions/configuration)
+  - [API Reference](https://shopify.dev/docs/api/checkout-ui-extensions/apis)
+  - [UI Components](https://shopify.dev/docs/api/checkout-ui-extensions/components)
+  - [Available React Hooks](https://shopify.dev/docs/api/checkout-ui-extensions/react-hooks)

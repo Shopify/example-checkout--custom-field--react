@@ -9,7 +9,7 @@ type = "ui_extension"
 handle = "custom-field"
 # [START custom-field.ext-config]
 [[extensions.targeting]]
-module = "./src/index.jsx"
+module = "./src/Checkout.jsx"
 target = "purchase.checkout.shipping-option-list.render-after"
 # [END custom-field.ext-config]
 

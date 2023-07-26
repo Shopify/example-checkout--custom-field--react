@@ -10,7 +10,7 @@ handle = "custom-field"
 # [START custom-field.ext-config]
 [[extensions.targeting]]
 module = "./src/index.jsx"
-target = "purchase.checkout.block.render"
+target = "purchase.checkout.shipping-option-list.render-after"
 # [END custom-field.ext-config]
 
 # [[extensions.metafields]]

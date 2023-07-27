@@ -10,7 +10,10 @@ node_modules
 database.sqlite
 
 /extensions/**/node_modules
+/extensions/**/dist
 
 .env
 package-lock.json
 yarn.lock
+
+.DS_Store

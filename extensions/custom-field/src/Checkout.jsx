@@ -52,6 +52,7 @@ function App() {
         <TextField
           label="Delivery instructions"
           multiline={3}
+          // [START custom-field.update-metafield]
           onChange={(value) => {
             // Apply the change to the metafield
             applyMetafieldsChange({
@@ -62,6 +63,7 @@ function App() {
               value,
             });
           }}
+          // [END custom-field.update-metafield]
           value={deliveryInstructions?.value}
         />
       )}

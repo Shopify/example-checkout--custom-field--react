@@ -2,13 +2,14 @@
   "name": "custom-field",
   "private": true,
   "version": "1.0.0",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
-    "react": "^17.0.0",
-    "@shopify/ui-extensions": "unstable",
-    "@shopify/ui-extensions-react": "unstable"
+    "react": "^18.0.0",
+    "@shopify/ui-extensions": "2023.10.x",
+    "@shopify/ui-extensions-react": "2023.10.x"
   },
   "devDependencies": {
-    "@types/react": "^17.0.0"
+    "@types/react": "^18.0.0",
+    "react-reconciler": "0.29.0"
   }
 }
